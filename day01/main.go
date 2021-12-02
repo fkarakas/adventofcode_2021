@@ -22,6 +22,16 @@ func Part1() int {
 	return increaseCount
 }
 
+func calculateIncrease(buffer []int, increaseCount int) int {
+	currentWindow := buffer[0] + buffer[1] + buffer[2]
+	nextWindow := buffer[1] + buffer[2] + buffer[3]
+
+	if nextWindow > currentWindow {
+		increaseCount++
+	}
+	return increaseCount
+}
+
 func Part2() int {
 	buffer := []int{}
 	increaseCount := 0
@@ -32,22 +42,12 @@ func Part2() int {
 			continue
 		}
 
-		currentWindow := buffer[0] + buffer[1] + buffer[2]
-		nextWindow := buffer[1] + buffer[2] + buffer[3]
-
-		if nextWindow > currentWindow {
-			increaseCount++
-		}
+		increaseCount = calculateIncrease(buffer, increaseCount)
 
 		buffer = append(buffer[1:], depth)
 	}
 
-	currentWindow := buffer[0] + buffer[1] + buffer[2]
-	nextWindow := buffer[1] + buffer[2] + buffer[3]
-
-	if nextWindow > currentWindow {
-		increaseCount++
-	}
+	increaseCount = calculateIncrease(buffer, increaseCount)
 
 	return increaseCount
 }
