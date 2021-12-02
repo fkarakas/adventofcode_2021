@@ -7,35 +7,35 @@ import (
 	"strconv"
 )
 
-func LoadDataAsInt() []int {
-	result := []int{}
-	for _, s := range LoadData() {
-		i, err := strconv.Atoi(s)
-		if err != nil {
-			log.Fatal(err)
-		}
-		result = append(result, i)
-	}
-	return result
-}
-
-func LoadData() []string {
-	result := []string{}
-
-	file, err := os.Open("data.txt")
+func toInt(s string) int {
+	i, err := strconv.Atoi(s)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	return i
+}
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		result = append(result, scanner.Text())
-	}
+func Depths() chan int {
+	c := make(chan int)
 
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
+	go func() {
+		defer close(c)
 
-	return result
+		file, err := os.Open("data.txt")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			c <- toInt(scanner.Text())
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	return c
 }

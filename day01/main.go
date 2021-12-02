@@ -5,11 +5,11 @@ import (
 )
 
 func Part1() int {
-	previousDepth := 0
+	previousDepth := -1
 	increaseCount := 0
 
-	for i, depth := range utils.LoadDataAsInt() {
-		if i == 0 {
+	for depth := range utils.Depths() {
+		if previousDepth == -1 {
 			previousDepth = depth
 			continue
 		}
@@ -23,28 +23,30 @@ func Part1() int {
 }
 
 func Part2() int {
-	currentWindowDepth := 0
-	previousWindowDepth := 0
+	buffer := []int{}
 	increaseCount := 0
 
-	arr := utils.LoadDataAsInt()
-
-	// init previous window
-	if len(arr) > 3 {
-		previousWindowDepth = arr[0] + arr[1] + arr[2]
-	}
-
-	for i := 1; i < len(arr); i++ {
-		if i+2 >= len(arr) {
-			break
+	for depth := range utils.Depths() {
+		if len(buffer) < 4 {
+			buffer = append(buffer, depth)
+			continue
 		}
 
-		currentWindowDepth = arr[i] + arr[i+1] + arr[i+2]
+		currentWindow := buffer[0] + buffer[1] + buffer[2]
+		nextWindow := buffer[1] + buffer[2] + buffer[3]
 
-		if currentWindowDepth > previousWindowDepth {
+		if nextWindow > currentWindow {
 			increaseCount++
 		}
-		previousWindowDepth = currentWindowDepth
+
+		buffer = append(buffer[1:], depth)
+	}
+
+	currentWindow := buffer[0] + buffer[1] + buffer[2]
+	nextWindow := buffer[1] + buffer[2] + buffer[3]
+
+	if nextWindow > currentWindow {
+		increaseCount++
 	}
 
 	return increaseCount
