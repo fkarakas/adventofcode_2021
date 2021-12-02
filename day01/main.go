@@ -33,6 +33,7 @@ func calculateIncrease(buffer []int, increaseCount int) int {
 }
 
 func Part2() int {
+	// a buffer of 4 to compare current and next window
 	buffer := []int{}
 	increaseCount := 0
 
