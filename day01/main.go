@@ -1,14 +1,29 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/fkarakas/adventofcode_2021/utils"
 )
 
-func Part1() int {
+func depths() chan interface{} {
+	return utils.Data("input", func(v string) interface{} {
+		i, err := strconv.Atoi(v)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return i
+	})
+}
+
+func response1() int {
 	previousDepth := -1
 	increaseCount := 0
 
-	for depth := range utils.Depths() {
+	for d := range depths() {
+		depth := d.(int)
 		if previousDepth == -1 {
 			previousDepth = depth
 			continue
@@ -32,12 +47,14 @@ func calculateIncrease(buffer []int, increaseCount int) int {
 	return increaseCount
 }
 
-func Part2() int {
+func response2() int {
 	// a buffer of 4 to compare current and next window
 	buffer := []int{}
 	increaseCount := 0
 
-	for depth := range utils.Depths() {
+	for d := range depths() {
+		depth := d.(int)
+
 		if len(buffer) < 4 {
 			buffer = append(buffer, depth)
 			continue
@@ -54,6 +71,6 @@ func Part2() int {
 }
 
 func main() {
-	println("part1 increase count=", Part1())
-	println("part2 increase count=", Part2())
+	fmt.Printf("response1=%v\n", response1())
+	fmt.Printf("response2=%v\n", response2())
 }

@@ -4,24 +4,15 @@ import (
 	"bufio"
 	"log"
 	"os"
-	"strconv"
 )
 
-func toInt(s string) int {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return i
-}
-
-func Depths() chan int {
-	c := make(chan int)
+func Data(filePrefix string, f func(v string) interface{}) chan interface{} {
+	c := make(chan interface{})
 
 	go func() {
 		defer close(c)
 
-		file, err := os.Open("data.txt")
+		file, err := os.Open(filePrefix + ".txt")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -29,7 +20,7 @@ func Depths() chan int {
 
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
-			c <- toInt(scanner.Text())
+			c <- f(scanner.Text())
 		}
 
 		if err := scanner.Err(); err != nil {
