@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func Data(file string, mapFilter func(v string) interface{}) chan interface{} {
+func Data(file string, mapFilter func(line string) interface{}) chan interface{} {
 	c := make(chan interface{})
 
 	go func() {
@@ -20,7 +20,12 @@ func Data(file string, mapFilter func(v string) interface{}) chan interface{} {
 
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
-			value := mapFilter(scanner.Text())
+			l := scanner.Text()
+			if mapFilter == nil {
+				c <- l
+				continue
+			}
+			value := mapFilter(l)
 			if value != nil {
 				c <- value
 			}
