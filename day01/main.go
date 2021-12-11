@@ -9,7 +9,7 @@ import (
 )
 
 func depths() chan interface{} {
-	return utils.Data("input", func(v string) interface{} {
+	return utils.Data("input.txt", func(v string) interface{} {
 		i, err := strconv.Atoi(v)
 		if err != nil {
 			log.Fatal(err)

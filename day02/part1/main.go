@@ -10,7 +10,7 @@ import (
 )
 
 func commands() chan interface{} {
-	return utils.Data("../input", func(v string) interface{} {
+	return utils.Data("../input.txt", func(v string) interface{} {
 		arr := strings.Split(v, " ")
 
 		value, err := strconv.Atoi(arr[1])

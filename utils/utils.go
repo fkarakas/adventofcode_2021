@@ -6,13 +6,13 @@ import (
 	"os"
 )
 
-func Data(filePrefix string, f func(v string) interface{}) chan interface{} {
+func Data(file string, mapFilter func(v string) interface{}) chan interface{} {
 	c := make(chan interface{})
 
 	go func() {
 		defer close(c)
 
-		file, err := os.Open(filePrefix + ".txt")
+		file, err := os.Open(file)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -20,7 +20,10 @@ func Data(filePrefix string, f func(v string) interface{}) chan interface{} {
 
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
-			c <- f(scanner.Text())
+			value := mapFilter(scanner.Text())
+			if value != nil {
+				c <- value
+			}
 		}
 
 		if err := scanner.Err(); err != nil {
